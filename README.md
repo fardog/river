@@ -6,6 +6,27 @@ A synchronized audio stream client, written in Python.
 Licensed under [GPLv2](http://www.gnu.org/licenses/gpl-2.0.txt)
 
 
+Required Packages
+-----------------
+
+### Debian Wheezy ###
+
+avahi-daemon
+portaudio
+python-avahi
+python-gobject
+python-numpy
+python-pip
+python-pyaudio
+python-twisted
+
+
+### pip ###
+
+ntplib
+requests
+
+
 Warranty
 --------
 

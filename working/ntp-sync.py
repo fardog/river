@@ -26,7 +26,7 @@ response = c.request('pool.ntp.org', version=3)
 print("[ntp-sync] clock offset %s" % response.offset)
 
 while True:
-    curtime = int(round(time.time() + response.offset))
+    curtime = int(math.floor(time.time() + response.offset))
     if (curtime % 5) == 0 and curtime > last:
         print curtime
         print("beep")
