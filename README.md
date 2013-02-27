@@ -11,20 +11,20 @@ Required Packages
 
 ### Debian Wheezy ###
 
-avahi-daemon
-portaudio
-python-avahi
-python-gobject
-python-numpy
-python-pip
-python-pyaudio
-python-twisted
+ - avahi-daemon
+ - portaudio
+ - python-avahi
+ - python-gobject
+ - python-numpy
+ - python-pip
+ - python-pyaudio
+ - python-twisted
 
 
 ### pip ###
 
-ntplib
-requests
+ - ntplib
+ - requests
 
 
 Warranty

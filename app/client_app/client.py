@@ -1,6 +1,7 @@
 from multiprocessing import Process, Queue, Pipe, Lock, Value
 
 from river.zeroconf import ZeroconfClient
+from river.ntp_thread import ntp_thread
 from .listener import listener
 
 

@@ -20,18 +20,21 @@ def query_configuration(name, address, port):
     if not ntp_server:
         ntp_server = address
 
+    DEFAULT_LENGTH = 1
+    SAMPLE_RATE = 22500
+
     sin_chunks = []
-    sin_chunks.append(sine(440, 1, 22500))
+    sin_chunks.append(sine(440, DEFAULT_LENGTH, SAMPLE_RATE))
     sin_chunk = numpy.concatenate(sin_chunks) * 0.25
     sin_output_chunk = sin_chunk.astype(numpy.float32).tostring()
 
     silence_chunks = []
-    silence_chunks.append(silence(0.05, 22500))
+    silence_chunks.append(silence(DEFAULT_LENGTH, SAMPLE_RATE))
     silence_chunk = numpy.concatenate(silence_chunks) * 0.25
     silence_output_chunk = silence_chunk.astype(numpy.float32).tostring()
 
     p = pyaudio.PyAudio()
-    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=22500, output=1)
+    stream = p.open(format=pyaudio.paFloat32, channels=1, rate=SAMPLE_RATE, output=1)
 
     last = 0
     print("[ntp-sync] getting clock")
@@ -40,12 +43,21 @@ def query_configuration(name, address, port):
     print("[ntp-sync] clock offset %s" % response.offset)
 
     while True:
-        curtime = int(math.floor(time.time() + response.offset))
-        if (curtime % 5) == 0 and curtime > last:
-            print curtime
+        current_time = time.time() + response.offset
+        floored_time = int(math.floor(current_time))
+        remaining_time = 5 - (current_time - floored_time + (floored_time % 5))
+
+        if (floored_time % 5) == 0 and floored_time > last:
+            print floored_time
             print("beep")
-            last = curtime
+            last = floored_time
             stream.write(sin_output_chunk)
+        elif remaining_time < DEFAULT_LENGTH:
+            print ("remaining time: %s" % remaining_time)
+            samples_to_play = SAMPLE_RATE * 4 - (int(math.ceil((DEFAULT_LENGTH - remaining_time) * (SAMPLE_RATE * 4))))
+            print ("playing %s samples" % samples_to_play)
+            stream.write(silence_output_chunk[:samples_to_play])
+            print ("floored time: %s" % floored_time)
         else:
             stream.write(silence_output_chunk)
 
